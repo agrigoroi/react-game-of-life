@@ -53,14 +53,14 @@ const GameRecord = Record({
     cells: Set<Cell>(),
 });
 
-export class GameState extends GameRecord implements GameBase {
+export class State extends GameRecord implements GameBase {
     readonly cells: Set<Cell>;
 
     constructor(props: GameBase) {
         super(props);
     }
 
-    next(): GameState {
+    next(): State {
         const aliveCells = this.cells;
 
         const aliveInNext = aliveCells.flatMap(function (cell: Cell) {
@@ -79,6 +79,6 @@ export class GameState extends GameRecord implements GameBase {
             }
         }).toSet();
 
-        return new GameState({ cells: aliveInNext });
+        return new State({ cells: aliveInNext });
     }
 }
