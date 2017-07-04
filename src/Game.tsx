@@ -20,13 +20,13 @@ export default class GameComponent extends React.Component<GameProps, GameState>
     cellSize: number;
 
     componentWillMount() {
-        const intervalId: number = setInterval(
+        const intervalId: number = window.setInterval(
             (function (self: GameComponent) {
                 return function () {
                     self.timer();
                 };
             })(this),
-            1000) as number;
+            1000);
         this.setState({ intervalId });
 
         this.setState({ state: this.props.initialState });
