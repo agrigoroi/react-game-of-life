@@ -27,14 +27,14 @@ export default class GameComponent extends React.Component<GameProps, GameState>
                 };
             })(this),
             1000);
-        this.setState({ intervalId });
 
-        this.setState({ state: this.props.initialState });
+        // TODO: should interval be stored as state or property of class
+        this.setState({ intervalId, state: this.props.initialState });
     }
 
     componentDidMount() {
         // trigger a rerender as we have the height now
-        this.setState({ state: this.state.state });
+        this.setState({...this.state, state: this.state.state });
         if (this.divElement != null) {
             if (this.divElement.clientHeight > this.divElement.clientWidth) {
                 this.cellSize = this.divElement.clientWidth / this.props.gameSize;
@@ -50,7 +50,7 @@ export default class GameComponent extends React.Component<GameProps, GameState>
 
     timer() {
         const nextState = this.state.state.next();
-        this.setState({ state: nextState });
+        this.setState({...this.state, state: nextState });
     }
 
     render() {
