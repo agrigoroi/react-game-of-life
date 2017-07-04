@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './App.css';
-import { State, Cell } from './conways-game-of-life';
+import State from './conways-game-of-life/Game';
+import Cell from './conways-game-of-life/Cell';
 import { Set } from 'immutable';
 import GameComponent from './Game';
 

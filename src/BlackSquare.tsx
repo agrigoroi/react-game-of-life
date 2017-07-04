@@ -18,6 +18,6 @@ export default class BlackSquare extends React.Component<BlackSquareProps, {}> {
             width: this.props.width
         };
 
-        return <div style={style} />;
+        return <span style={style} />;
     }
 }

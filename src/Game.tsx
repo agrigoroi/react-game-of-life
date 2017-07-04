@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { State, Cell } from './conways-game-of-life';
+import State from './conways-game-of-life/Game';
+import Cell from './conways-game-of-life/Cell';
 import BlackSquare from './BlackSquare';
 
 interface GameState {
@@ -58,14 +59,7 @@ export default class GameComponent extends React.Component<GameProps, GameState>
                 <div
                     className="canvas"
                     ref={(divElement) => this.divElement = divElement}
-                >
-                    <BlackSquare
-                        top={0}
-                        left={10}
-                        height={10}
-                        width={10}
-                    />
-                </div>
+                />
             );
         } else {
             const cellSize = this.cellSize;
