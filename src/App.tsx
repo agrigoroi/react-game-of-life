@@ -7,11 +7,12 @@ import GameComponent from './Game';
 
 interface AppState {
   tickDuration: number;
+  gameSize: number;
 }
 
 class App extends React.Component<{}, AppState> {
   componentWillMount() {
-    this.setState({ tickDuration: 500 });
+    this.setState({ tickDuration: 500, gameSize: 50 });
   }
 
   render() {
@@ -19,6 +20,18 @@ class App extends React.Component<{}, AppState> {
     return (
       <div className="App">
         <div className="header">
+          <div style={{ float: 'left' }}>
+            <label>Game Size</label>
+            <input
+              type="number"
+              value={app.state.gameSize}
+              min={0}
+              max={1000}
+              onChange={function (event) {
+                app.setState({ gameSize: +event.target.value });
+              }}
+            />
+          </div>
           <div style={{ float: 'right' }}>
             <label>Speed</label>
             <input
@@ -27,15 +40,14 @@ class App extends React.Component<{}, AppState> {
               min={200}
               max={2000}
               onChange={function (event) {
-                const value = +event.target.value;
-                app.setState({ tickDuration: value });
+                app.setState({ tickDuration: +event.target.value });
               }}
               step={50}
             />
           </div>
         </div>
         <GameComponent
-          gameSize={50}
+          gameSize={app.state.gameSize}
           tickDuration={app.state.tickDuration}
           initialState={
             new State({

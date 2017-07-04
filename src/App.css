@@ -17,7 +17,6 @@ body,
   display: table;
   height: 100%;
   width: 100%;
-  background: yellow;
   /* just to make sure nothing bleeds */
 }
 
@@ -30,7 +29,5 @@ body,
   display: table-row;
   /* height is dynamic, and will expand... */
   height: 100%;
-  /* ...as content is added (won't scroll) */
-  background: turquoise;
   position: relative;
 }
