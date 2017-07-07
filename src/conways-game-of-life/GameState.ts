@@ -18,18 +18,17 @@ export default class GameState extends GameStateRecord implements GameStateBase 
 
     aliveNeighbours(cell: Cell): number {
         const board = this;
-        return cell.neighbours().count(function (neighbour: Cell) {
-            return board.cells.contains(neighbour);
-        });
+        return cell.neighbours()
+            .count((neighbour: Cell) => board.cells.contains(neighbour));
     }
 
     next(): GameState {
         const board = this;
 
         const aliveInNext = board.cells.flatMap(function (cell: Cell) {
-            const neighboursInNext = cell.neighbours().filter(function (neighbour: Cell) {
-                return board.aliveNeighbours(neighbour) === 3;
-            }).toSet();
+            const neighboursInNext = cell.neighbours()
+                .filter((neighbour: Cell) => board.aliveNeighbours(neighbour) === 3)
+                .toSet();
 
             const aliveNeighbours = board.aliveNeighbours(cell);
 

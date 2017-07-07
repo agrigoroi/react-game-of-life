@@ -11,35 +11,22 @@ interface BoardProps {
 export default class BoardComponent extends React.Component<BoardProps, {}> {
     private divElement: HTMLDivElement | null;
 
-    componentDidMount() {
-      // this.setState({});
-    }
-
     render() {
         const cellSize = this.cellSize();
 
         if (!cellSize) {
-            return (
-                <div
-                    className="canvas"
-                    ref={(divElement) => this.divElement = divElement}
-                />
-            );
+            return <div className="canvas" ref={(el) => this.divElement = el} />;
         } else {
             return (
-                <div
-                    className="canvas"
-                    ref={(divElement) => this.divElement = divElement}
-                >{this.props.cells.map(function (cell: Cell) {
-                    return (
-                        <BlackSquare
+                <div className="canvas" ref={(el) => this.divElement = el}>
+                    {this.props.cells.map((cell: Cell) =>
+                        (<BlackSquare
                             key={cell.x + 'x' + cell.y}
                             size={cellSize}
                             top={cell.y * cellSize}
                             left={cell.x * cellSize}
-                        />
-                    );
-                }).toArray()}
+                        />)
+                    ).toArray()}
                 </div>
             );
         }

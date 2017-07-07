@@ -38,11 +38,10 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
         const component = this;
 
         const size = component.state.size;
-        const cells = this.state.state.cells.map(function (cell: Cell) {
-            return component.centerCell(cell, size);
-        }).filter(function (cell: Cell) {
-            return cell.x >= 0 && cell.x <= size && cell.y >= 0 && cell.y <= size;
-        }).toSet();
+        const cells = this.state.state.cells
+            .map((cell: Cell) => component.centerCell(cell, size))
+            .filter((cell: Cell) => cell.x >= 0 && cell.x <= size && cell.y >= 0 && cell.y <= size)
+            .toSet();
 
         return (
             <div className="game">
@@ -52,9 +51,7 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
                         value={component.state.size}
                         min={15}
                         max={2000}
-                        onChange={function (newSize) {
-                            component.setState({ size: newSize });
-                        }}
+                        onChange={(newSize) => component.setState({ size: newSize })}
                         step={50}
                     />
                     <RangeInput
@@ -62,9 +59,7 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
                         value={component.state.speed}
                         min={200}
                         max={2000}
-                        onChange={function (speed) {
-                            component.setState({ speed });
-                        }}
+                        onChange={(speed) => component.setState({ speed })}
                         step={50}
                     />
                 </div>
