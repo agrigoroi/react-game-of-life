@@ -120,8 +120,8 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
     }
 
     private timer() {
+        this.initInterval();
         const nextState = this.state.state.next();
         this.setState({ state: nextState });
-        this.initInterval();
     }
 }
