@@ -12,6 +12,22 @@ const GameStateRecord = Record({
 export default class GameState extends GameStateRecord implements GameStateBase {
     readonly cells: Set<Cell>;
 
+    static parse(input: string, splitChar: string = '\n'): GameState {
+        const cells = Set(input.split(splitChar))
+            .map((line: string) => {
+                const coordinates = line.trim().split(',');
+                if (coordinates.length !== 2) {
+                    throw new Error('invalid coordonates: ' + line);
+                } else {
+                    return new Cell({
+                        x: parseInt(coordinates[0], 10),
+                        y: parseInt(coordinates[1], 10)
+                    });
+                }
+            }).toSet();
+        return new GameState({ cells });
+    }
+
     constructor(props: GameStateBase) {
         super(props);
     }
