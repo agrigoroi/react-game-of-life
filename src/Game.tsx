@@ -6,6 +6,7 @@ import { Set, Map } from 'immutable';
 import RangeInput from './RangeInput';
 import * as Select from 'react-select';
 import 'react-select/dist/react-select.css';
+import './Game.css'
 
 interface GameComponentState {
     state: GameState;
@@ -59,7 +60,8 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
 
         return (
             <div className="game">
-                <div className="header">
+                <BoardComponent size={size} cells={cells} />
+                <div className="controls">
                     <RangeInput
                         label="Game size"
                         value={component.state.size}
@@ -91,7 +93,6 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
                         }}
                     />
                 </div>
-                <BoardComponent size={size} cells={cells} />
             </div>
         );
     }

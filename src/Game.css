@@ -1,0 +1,21 @@
+.game {
+    width: 100%;
+    height: 100%;
+}
+
+.controls {
+    background: gray;
+}
+
+@media all and (orientation: landscape) {
+    .controls {
+        width: calc(100% - 100vh);
+        float: right;
+    }
+}
+
+@media all and (orientation: portrait) {
+    .controls {
+        height: calc(100% - 100vw);
+    }
+}

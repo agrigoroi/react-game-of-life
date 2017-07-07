@@ -2,6 +2,7 @@ import * as React from 'react';
 import Cell from './conways-game-of-life/Cell';
 import BlackSquare from './BlackSquare';
 import { Set } from 'immutable';
+import './Board.css';
 
 interface BoardProps {
     cells: Set<Cell>;
@@ -15,10 +16,10 @@ export default class BoardComponent extends React.Component<BoardProps, {}> {
         const cellSize = this.cellSize();
 
         if (!cellSize) {
-            return <div className="canvas" ref={(el) => this.divElement = el} />;
+            return <div className="board" ref={(el) => this.divElement = el} />;
         } else {
             return (
-                <div className="canvas" ref={(el) => this.divElement = el}>
+                <div className="board" ref={(el) => this.divElement = el}>
                     {this.props.cells.map((cell: Cell) =>
                         (<BlackSquare
                             key={cell.x + 'x' + cell.y}

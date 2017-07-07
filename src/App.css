@@ -1,33 +1,6 @@
-.App {
-  text-align: center;
-}
-
-.App-intro {
-  font-size: large;
-}
-
 html,
 body,
 #root {
   height: 100%;
   margin: 0
-}
-
-.game {
-  display: table;
-  height: 100%;
-  width: 100%;
-  /* just to make sure nothing bleeds */
-}
-
-.header {
-  display: table-row;
-  background: gray;
-}
-
-.canvas {
-  display: table-row;
-  /* height is dynamic, and will expand... */
-  height: 100%;
-  position: relative;
 }

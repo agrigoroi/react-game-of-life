@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './BlackSquare.css';
 
 interface BlackSquareProps {
     top: number;
@@ -10,9 +11,8 @@ export default class BlackSquare extends React.Component<BlackSquareProps, {}> {
     render() {
         return (
             <span
+                className="black-square"
                 style={{
-                    background: 'black',
-                    position: 'absolute' as 'absolute',
                     top: this.props.top,
                     left: this.props.left,
                     height: this.props.size,
