@@ -3,10 +3,7 @@ import GameState from './conways-game-of-life/GameState';
 import Cell from './conways-game-of-life/Cell';
 import BoardComponent from './Board';
 import { Set } from 'immutable';
-
-// interface GameProps {
-//     initialState: GameState;
-// }
+import RangeInput from './RangeInput';
 
 interface GameComponentState {
     state: GameState;
@@ -50,31 +47,26 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
         return (
             <div className="game">
                 <div className="header">
-                    <div style={{ float: 'left' }}>
-                        <label>Game Size</label>
-                        <input
-                            type="number"
-                            value={this.state.size}
-                            min={0}
-                            max={1000}
-                            onChange={function (event) {
-                                component.setState({ size: +event.target.value });
-                            }}
-                        />
-                    </div>
-                    <div style={{ float: 'right' }}>
-                        <label>Speed</label>
-                        <input
-                            type="range"
-                            value={component.state.speed}
-                            min={200}
-                            max={2000}
-                            onChange={function (event) {
-                                component.setState({ speed: +event.target.value });
-                            }}
-                            step={50}
-                        />
-                    </div>
+                    <RangeInput
+                        label="Game size"
+                        value={component.state.size}
+                        min={15}
+                        max={2000}
+                        onChange={function (newSize) {
+                            component.setState({ size: newSize });
+                        }}
+                        step={50}
+                    />
+                    <RangeInput
+                        label="Game Speed"
+                        value={component.state.speed}
+                        min={200}
+                        max={2000}
+                        onChange={function (speed) {
+                            component.setState({ speed });
+                        }}
+                        step={50}
+                    />
                 </div>
                 <BoardComponent size={size} cells={cells} />
             </div>
