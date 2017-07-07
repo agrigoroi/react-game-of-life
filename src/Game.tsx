@@ -6,7 +6,7 @@ import { Set, Map } from 'immutable';
 import RangeInput from './RangeInput';
 import * as Select from 'react-select';
 import 'react-select/dist/react-select.css';
-import './Game.css'
+import './Game.css';
 
 interface GameComponentState {
     state: GameState;
@@ -73,7 +73,7 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
                     <RangeInput
                         label="Game Speed"
                         value={component.state.speed}
-                        min={0}
+                        min={50}
                         max={2000}
                         onChange={(speed) => component.setState({ speed })}
                         step={50}
@@ -97,18 +97,25 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
         );
     }
 
+    componentDidUpdate(_: {}, prevState: GameComponentState) {
+        if (this.state.speed !== prevState.speed) {
+            this.clearInterval();
+            this.initInterval();
+        }
+    }
+
     componentWillUnmount() {
         this.clearInterval();
     }
 
     private initInterval() {
-        const intervalId = window.setTimeout(this.timer.bind(this), this.state.speed);
+        const intervalId = window.setInterval(this.timer.bind(this), this.state.speed);
         this.setState({ intervalId });
     }
 
     private clearInterval() {
         if (this.state.intervalId) {
-            clearTimeout(this.state.intervalId);
+            window.clearInterval(this.state.intervalId);
         }
     }
 
@@ -120,7 +127,6 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
     }
 
     private timer() {
-        this.initInterval();
         const nextState = this.state.state.next();
         this.setState({ state: nextState });
     }

@@ -25,6 +25,7 @@ export default class RangeInput extends React.Component<RangeInputProps, {}> {
           }}
           step={50}
         />
+        <span>{this.props.value}</span>
       </div>
     );
   }
