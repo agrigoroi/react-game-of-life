@@ -6,13 +6,21 @@ import './Board.css';
 interface BoardProps {
     cells: Set<Cell>;
     size: number;
+    onClick: (cell: Cell) => void;
 }
 
 export default class BoardComponent extends React.Component<BoardProps, {}> {
     private canvas: HTMLCanvasElement | null;
 
     render() {
-        return <canvas className="board" ref={canvas => this.canvas = canvas} />;
+        const component = this;
+        return (
+            <canvas
+                className="board"
+                ref={canvas => this.canvas = canvas}
+                onClick={(event) => component.onClick(event)}
+            />
+        );
     }
 
     componentDidMount() {
@@ -21,13 +29,22 @@ export default class BoardComponent extends React.Component<BoardProps, {}> {
     }
 
     componentDidUpdate(prevProps: BoardProps, _: {}) {
-        // if (this.props.size !== prevProps.size || !this.props.cells.equals(prevProps.cells)) {
-            this.clearAndRedraw();
-        // }
+        this.clearAndRedraw();
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.onresize);
+    }
+
+    private onClick(event: React.MouseEvent<HTMLCanvasElement>) {
+        const cellSize = this.cellSize();
+
+        if (cellSize) {
+            const x = Math.floor(event.clientX / cellSize);
+            const y = Math.floor(event.clientY / cellSize);
+
+            this.props.onClick(this.untraslateCell(x, y));
+        }
     }
 
     private onresize() {
@@ -50,12 +67,15 @@ export default class BoardComponent extends React.Component<BoardProps, {}> {
 
     private draw(context: CanvasRenderingContext2D) {
         const cellSize = this.cellSize();
+        const component = this;
 
         if (cellSize) {
             context.fillStyle = 'black';
-            this.props.cells.forEach((cell: Cell) => {
-                context.fillRect(cell.x * cellSize, cell.y * cellSize, cellSize, cellSize);
-            });
+            this.props.cells
+                .map((cell: Cell) => component.translateCell(cell))
+                .forEach((cell: Cell) => {
+                    context.fillRect(cell.x * cellSize, cell.y * cellSize, cellSize, cellSize);
+                });
         }
     }
 
@@ -69,5 +89,19 @@ export default class BoardComponent extends React.Component<BoardProps, {}> {
         } else {
             return null;
         }
+    }
+
+    private translateCell(cell: Cell) {
+        return new Cell({
+            x: cell.x + Math.floor(this.props.size / 2),
+            y: cell.y + Math.floor(this.props.size / 2)
+        });
+    }
+
+    private untraslateCell(x: number, y: number): Cell {
+        return new Cell({
+            x: x - Math.floor(this.props.size / 2),
+            y: y - Math.floor(this.props.size / 2)
+        });
     }
 }

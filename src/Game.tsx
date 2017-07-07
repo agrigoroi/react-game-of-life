@@ -42,14 +42,15 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
         const component = this;
 
         const size = component.state.size;
-        const cells = this.state.state.cells
-            .map((cell: Cell) => component.centerCell(cell, size))
-            .filter((cell: Cell) => cell.x >= 0 && cell.x <= size && cell.y >= 0 && cell.y <= size)
-            .toSet();
+        const cells = this.state.state.cells;
 
         return (
             <div className="game">
-                <BoardComponent size={size} cells={cells} />
+                <BoardComponent
+                    size={size}
+                    cells={cells}
+                    onClick={(cell) => component.toggleCell(cell)}
+                />
                 <div className="controls">
                     <div>
                         <RangeInput
@@ -64,7 +65,7 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
                     <SpeedSelect
                         isRunning={this.state.intervalId !== null}
                         onPause={() => component.clearInterval()}
-                        onResume={() => component.initInterval() }
+                        onResume={() => component.initInterval()}
                         speed={this.state.speed}
                         onSpeedChange={(speed) => this.setState({ speed })}
                     />
@@ -97,15 +98,20 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
         }
     }
 
-    private centerCell(cell: Cell, gameSize: number) {
-        return new Cell({
-            x: cell.x + Math.floor(gameSize / 2),
-            y: cell.y + Math.floor(gameSize / 2)
-        });
-    }
-
     private timer() {
         const nextState = this.state.state.next();
         this.setState({ state: nextState });
+    }
+
+    private toggleCell(cell: Cell) {
+        if (this.state.state.cells.contains(cell)) {
+            this.setState({
+                state: new GameState({ cells: this.state.state.cells.remove(cell) })
+            });
+        } else {
+            this.setState({
+                state: new GameState({ cells: this.state.state.cells.add(cell) })
+            });
+        }
     }
 }
