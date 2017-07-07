@@ -1,126 +1,111 @@
 import * as React from 'react';
-import State from './conways-game-of-life/Game';
+import GameState from './conways-game-of-life/GameState';
 import Cell from './conways-game-of-life/Cell';
-import BlackSquare from './BlackSquare';
+import BoardComponent from './Board';
+import { Set } from 'immutable';
 
-interface GameState {
-    state: State;
-    intervalId: number;
-    cellSize: number;
+// interface GameProps {
+//     initialState: GameState;
+// }
+
+interface GameComponentState {
+    state: GameState;
+    intervalId: number | null;
+    size: number;
+    speed: number;
 }
 
-interface GameProps {
-    initialState: State;
-    gameSize: number;
-    tickDuration: number;
-}
-
-// Props: Grid size and game speed.
-
-export default class GameComponent extends React.Component<GameProps, GameState> {
-    divElement: HTMLDivElement | null;
-
-    componentWillReceiveProps(nextProps: GameProps) {
-        if (this.props.tickDuration !== nextProps.tickDuration) {
-            this.clearInterval();
-            this.initInterval(nextProps.tickDuration);
-        }
-        if (this.props.gameSize !== nextProps.gameSize) {
-            this.computeCellSize(nextProps.gameSize);
-        }
-    }
-
-    initInterval(tickDuration: number) {
-        const intervalId: number = window.setInterval(
-            (function (self: GameComponent) {
-                return function () {
-                    self.timer();
-                };
-            })(this),
-            tickDuration);
-        this.setState({ intervalId });
+export default class GameComponent extends React.Component<{}, GameComponentState> {
+    constructor(props: {}) {
+        super(props);
+        this.state = {
+            state: new GameState({
+                cells: Set.of(
+                    new Cell({ x: 5, y: 5 }),
+                    new Cell({ x: 6, y: 5 }),
+                    new Cell({ x: 7, y: 5 }),
+                    new Cell({ x: 6, y: 6 })
+                )
+            }),
+            size: 50,
+            speed: 200,
+            intervalId: null
+        };
     }
 
     componentWillMount() {
-        const props = this.props;
-
-        this.initInterval(props.tickDuration);
-
-        // TODO: should interval be stored as state or property of class
-        this.setState({ state: this.props.initialState });
+        this.initInterval();
     }
 
-    centerCell(cell: Cell, gameSize: number) {
-        return new Cell({
-            x: cell.x + Math.floor(gameSize / 2),
-            y: cell.y + Math.floor(gameSize / 2)
-        });
-    }
+    render() {
+        const component = this;
 
-    componentDidMount() {
-        // trigger a rerender as we have the height now
-        this.setState({ state: this.state.state });
-        this.computeCellSize(this.props.gameSize);
-    }
+        const size = component.state.size;
+        const cells = this.state.state.cells.map(function (cell: Cell) {
+            return component.centerCell(cell, size);
+        }).filter(function (cell: Cell) {
+            return cell.x >= 0 && cell.x <= size && cell.y >= 0 && cell.y <= size;
+        }).toSet();
 
-    computeCellSize(gameSize: number) {
-        if (this.divElement != null) {
-            if (this.divElement.clientHeight > this.divElement.clientWidth) {
-                this.setState({ cellSize: this.divElement.clientWidth / gameSize });
-            } else {
-                this.setState({ cellSize: this.divElement.clientHeight / gameSize });
-            }
-        }
-    }
-
-    clearInterval() {
-        clearInterval(this.state.intervalId);
+        return (
+            <div className="game">
+                <div className="header">
+                    <div style={{ float: 'left' }}>
+                        <label>Game Size</label>
+                        <input
+                            type="number"
+                            value={this.state.size}
+                            min={0}
+                            max={1000}
+                            onChange={function (event) {
+                                component.setState({ size: +event.target.value });
+                            }}
+                        />
+                    </div>
+                    <div style={{ float: 'right' }}>
+                        <label>Speed</label>
+                        <input
+                            type="range"
+                            value={component.state.speed}
+                            min={200}
+                            max={2000}
+                            onChange={function (event) {
+                                component.setState({ speed: +event.target.value });
+                            }}
+                            step={50}
+                        />
+                    </div>
+                </div>
+                <BoardComponent size={size} cells={cells} />
+            </div>
+        );
     }
 
     componentWillUnmount() {
         this.clearInterval();
     }
 
-    timer() {
-        const nextState = this.state.state.next();
-        this.setState({ ...this.state, state: nextState });
+    private initInterval() {
+        const intervalId = window.setTimeout(this.timer.bind(this), this.state.speed);
+        this.setState({ intervalId });
     }
 
-    render() {
-        if (this.divElement == null) {
-            return (
-                <div
-                    className="canvas"
-                    ref={(divElement) => this.divElement = divElement}
-                />
-            );
-        } else {
-            const cellSize = this.state.cellSize;
-            const component = this;
-            const squares = this.state.state.cells
-                .map(function (cell: Cell) {
-                    return component.centerCell(cell, component.props.gameSize);
-                }).filter(function (cell: Cell) {
-                    return cell.x >= 0 && cell.y >= 0;
-                }).map(function (cell: Cell) {
-                    return (
-                        <BlackSquare
-                            key={cell.x + 'x' + cell.y}
-                            height={cellSize}
-                            width={cellSize}
-                            top={cell.y * cellSize}
-                            left={cell.x * cellSize}
-                        />
-                    );
-                }).toArray();
-            return (
-                <div
-                    className="canvas"
-                    ref={(divElement) => this.divElement = divElement}
-                >
-                    {squares}
-                </div>
-            );
+    private clearInterval() {
+        if (this.state.intervalId) {
+            clearTimeout(this.state.intervalId);
         }
+    }
+
+    private centerCell(cell: Cell, gameSize: number) {
+        return new Cell({
+            x: cell.x + Math.floor(gameSize / 2),
+            y: cell.y + Math.floor(gameSize / 2)
+        });
+    }
+
+    private timer() {
+        const nextState = this.state.state.next();
+        this.setState({ state: nextState });
+        this.initInterval();
     }
 }

@@ -3,21 +3,22 @@ import * as React from 'react';
 interface BlackSquareProps {
     top: number;
     left: number;
-    height: number; // in pixels
-    width: number;
+    size: number; // in pixels
 }
 
 export default class BlackSquare extends React.Component<BlackSquareProps, {}> {
     render() {
-        const style = {
-            background: 'black',
-            position: 'absolute' as 'absolute',
-            top: this.props.top,
-            left: this.props.left,
-            height: this.props.height,
-            width: this.props.width
-        };
-
-        return <span style={style} />;
+        return (
+            <span
+                style={{
+                    background: 'black',
+                    position: 'absolute' as 'absolute',
+                    top: this.props.top,
+                    left: this.props.left,
+                    height: this.props.size,
+                    width: this.props.size
+                }}
+            />
+        );
     }
 }

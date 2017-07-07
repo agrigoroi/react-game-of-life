@@ -33,10 +33,4 @@ export default class Cell extends CellRecord implements CellBase {
         }
         return Set(neighbours);
     }
-
-    aliveNeighbours(aliveCells: Set<Cell>): number {
-        return this.neighbours().count(function (neighbour: Cell) {
-            return aliveCells.contains(neighbour);
-        });
-    }
 }
