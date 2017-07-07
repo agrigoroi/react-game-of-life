@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './RangeInput.css';
 
 interface RangeInputProps {
   label: string;
@@ -13,7 +14,7 @@ export default class RangeInput extends React.Component<RangeInputProps, {}> {
   render() {
     const self = this;
     return (
-      <div>
+      <div className="range-input">
         <label>{this.props.label}</label>
         <input
           type="range"

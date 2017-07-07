@@ -58,47 +58,63 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
             .filter((cell: Cell) => cell.x >= 0 && cell.x <= size && cell.y >= 0 && cell.y <= size)
             .toSet();
 
+        const button = () => {
+            if (this.state.intervalId) {
+                return <button onClick={() => component.clearInterval()}>Pause</button>;
+            } else {
+                return <button onClick={() => component.initInterval()}>Resume</button>;
+            }
+        };
+
         return (
             <div className="game">
                 <BoardComponent size={size} cells={cells} />
                 <div className="controls">
-                    <RangeInput
-                        label="Game size"
-                        value={component.state.size}
-                        min={25}
-                        max={1000}
-                        onChange={(newSize) => component.setState({ size: newSize })}
-                        step={1}
-                    />
-                    <RangeInput
-                        label="Game Speed"
-                        value={component.state.speed}
-                        min={50}
-                        max={2000}
-                        onChange={(speed) => component.setState({ speed })}
-                        step={50}
-                    />
-                    <Select
-                        name="Example Select"
-                        options={examples.map(function (_, label) {
-                            return { value: label, label };
-                        }).toArray()}
-                        onChange={(ex) => {
-                            if (ex instanceof Array) {
-                                ex = ex[0];
-                            }
-                            if (ex && ex.label) {
-                                component.setState({ state: examples.get(ex.label) });
-                            }
-                        }}
-                    />
+                    <div>
+                        <RangeInput
+                            label="Game Size"
+                            value={component.state.size}
+                            min={25}
+                            max={1000}
+                            onChange={(newSize) => component.setState({ size: newSize })}
+                            step={1}
+                        />
+                    </div>
+                    <div>
+                        <RangeInput
+                            label="Game Speed"
+                            value={component.state.speed}
+                            min={50}
+                            max={2000}
+                            onChange={(speed) => component.setState({ speed })}
+                            step={50}
+                        />
+                        {button()}
+                    </div>
+                    <div>
+                        <Select
+                            name="Example Select"
+                            searchable={false}
+                            options={examples.map(function (_, label) {
+                                return { value: label, label };
+                            }).toArray()}
+                            onChange={(ex) => {
+                                if (ex instanceof Array) {
+                                    ex = ex[0];
+                                }
+                                if (ex && ex.label) {
+                                    component.setState({ state: examples.get(ex.label) });
+                                }
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
         );
     }
 
     componentDidUpdate(_: {}, prevState: GameComponentState) {
-        if (this.state.speed !== prevState.speed) {
+        if (this.state.intervalId && this.state.speed !== prevState.speed) {
             this.clearInterval();
             this.initInterval();
         }
@@ -116,6 +132,7 @@ export default class GameComponent extends React.Component<{}, GameComponentStat
     private clearInterval() {
         if (this.state.intervalId) {
             window.clearInterval(this.state.intervalId);
+            this.setState({ intervalId: null });
         }
     }
 
